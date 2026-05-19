@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHSMS - লাইভ ভয়েস ও ভিডিও কলিং</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
+        
+        /* 📢 অ্যাডমিন নোটিশ বার */
+        .admin-notice-bar { width: 100%; max-width: 950px; background: #fff3cd; color: #856404; padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: center; font-weight: bold; border: 1px solid #ffeeba; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .app-container { width: 100%; max-width: 950px; height: 85vh; background: rgba(255, 255, 255, 0.9); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; overflow: hidden; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); }
+        
+        /* Auth Screen */
+        .auth-container { width: 100%; max-width: 400px; background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border: 2px solid #ffb7b2; }
+        .auth-container h2 { margin-bottom: 20px; color: #ff6b6b; font-size: 1.8rem; }
+        .auth-container input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ffccd5; border-radius: 25px; outline: none; transition: 0.3s; padding-left: 20px; }
+        .auth-container input:focus { border-color: #ff6b6b; box-shadow: 0 0 8px rgba(255,107,107,0.2); }
+        .auth-container button { width: 100%; padding: 14px; background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 1rem; box-shadow: 0 4px 10px rgba(255,107,107,0.3); }
+        
+        /* Sidebar */
+        .sidebar { width: 30%; border-right: 1px solid #ffe5ec; display: flex; flex-direction: column; background: #fff5f7; }
+        .sidebar-header { padding: 20px 15px; background: linear-gradient(45deg, #ff758c, #ff7eb3); color: white; font-weight: bold; font-size: 1.3rem; text-align: center; position: relative; overflow: hidden; }
+        .animated-logo { display: inline-block; font-family: 'Arial Black', sans-serif; letter-spacing: 2px; text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); animation: moveAround 4s ease-in-out infinite alternate, glowEffect 1.5s ease-in-out infinite alternate; }
+
+        @keyframes moveAround { 0% { transform: translate(0, 0); } 50% { transform: translate(6px, -3px); } 100% { transform: translate(-6px, 3px); } }
+        @keyframes glowEffect { from { text-shadow: 0 0 4px #fff, 0 0 10px #ff4d6d, 0 0 20px #ff4d6d; } to { text-shadow: 0 0 8px #fff, 0 0 18px #ffb7b2, 0 0 35px #ff758c; } }
+
+        .add-friend-box { padding: 12px; display: flex; gap: 8px; background: #fff; border-bottom: 1px solid #ffe5ec; }
+        .add-friend-box input { flex: 1; padding: 10px; border: 1px solid #ffccd5; border-radius: 20px; outline: none; padding-left: 15px; }
+        .add-friend-box button { padding: 0 15px; background: #ff4d6d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        
+        .friend-list { flex: 1; overflow-y: auto; list-style: none; }
+        .friend-item { padding: 15px 12px; border-bottom: 1px solid #ffe5ec; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 500; color: #4a4a4a; }
+        .friend-item:hover { background: #ffe5ec; }
+        .friend-item.active { background: #ffccd5; color: #ff0040; font-weight: bold; border-left: 5px solid #ff4d6d; }
+        .list-delete-btn { color: #dc3545; font-size: 1.1rem; padding: 0 5px; transition: 0.2s; cursor: pointer; }
+        .list-delete-btn:hover { transform: scale(1.2); }
+
+        /* 👥 গ্রুপ চ্যাট বাটন (অ্যাডমিন দ্বারা নিয়ন্ত্রিত) */
+        .group-chat-btn { padding: 12px; background: #6a11cb; color: white; text-align: center; font-weight: bold; cursor: pointer; transition: 0.3s; border-top: 1px solid rgba(255,255,255,0.2); }
+        .group-chat-btn:hover { background: #2575fc; }
+
+        /* Chat Area */
+        .chat-area { width: 70%; display: flex; flex-direction: column; background: #fffbfb; position: relative; }
+        .chat-header { padding: 15px; background: #fff0f3; border-bottom: 1px solid #ffe5ec; font-weight: bold; font-size: 1rem; color: #ff4d6d; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .chat-header-left { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-actions-container { display: flex; align-items: center; gap: 15px; }
+        .call-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; transition: 0.2s; padding: 4px 8px; border-radius: 5px; }
+        .call-btn:hover { background: rgba(255, 117, 140, 0.15); transform: scale(1.1); }
+        
+        .whatsapp-support-btn { display: flex; align-items: center; gap: 4px; background: #25D366; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; text-decoration: none; font-weight: bold; }
+
+        .message-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); }
+        .message-wrapper { display: flex; flex-direction: column; width: 100%; position: relative; margin-bottom: 5px; }
+        .message-container { display: flex; align-items: center; width: 100%; position: relative; transition: transform 0.2s ease; cursor: grab; user-select: none; }
+        .message { padding: 12px 16px; border-radius: 20px; max-width: 65%; word-wrap: break-word; font-size: 0.95rem; position: relative; }
+        .message.incoming { background: #f1f3f5; align-self: flex-start !important; border-bottom-left-radius: 5px; color: #333; }
+        .message.outgoing { background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); color: white; align-self: flex-end !important; border-bottom-right-radius: 5px; }
+        .msg-time { font-size: 0.7rem; color: #a1a1a1; margin-top: 4px; display: block; }
+        .msg-sender { font-size: 0.75rem; color: #ff758c; font-weight: bold; margin-bottom: 2px; display: block; }
+
+        .reply-preview-bar { background: #ffe5ec; padding: 8px 15px; border-top: 1px solid #ffccd5; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #ff4d6d; }
+        .close-reply-btn { cursor: pointer; font-weight: bold; color: #ff6b6b; }
+
+        .input-area { display: flex; padding: 15px; border-top: 1px solid #ffe5ec; background: #fff0f3; }
+        .input-area input { flex: 1; padding: 14px 20px; border: 1px solid #ffccd5; border-radius: 30px; outline: none; font-size: 0.95rem; }
+        .input-area button { background: linear-gradient(45deg, #ff758c, #ff7eb3); color: white; border: none; padding: 0 25px; margin-left: 10px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        
+        /* 📞 রিয়েল-টাইম কলিং স্ক্রিন ওভারলে */
+        .call-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; color: white; text-align: center; }
+        .call-avatar { width: 120px; height: 120px; background: #ff758c; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; margin-bottom: 20px; box-shadow: 0 0 25px #ff758c; animation: pulse 1.5s infinite; }
+        .call-status { font-size: 1.2rem; color: #ffccd5; margin-bottom: 30px; font-weight: bold; }
+        
+        .call-buttons { display: flex; gap: 20px; }
+        .btn-call { border: none; padding: 12px 35px; border-radius: 30px; font-size: 1rem; font-weight: bold; cursor: pointer; color: white; }
+        .btn-accept { background: #28a745; box-shadow: 0 4px 10px rgba(40,167,69,0.4); }
+        .btn-decline { background: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.4); }
+
+        /* ভিডিও স্ট্রিম উইন্ডো */
+        .video-container { display: flex; gap: 10px; margin-top: 20px; width: 90%; max-width: 600px; justify-content: center; }
+        video { width: 45%; max-height: 250px; background: #222; border-radius: 10px; transform: scaleX(-1); border: 2px solid #ff758c; }
+
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 117, 140, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 117, 140, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 117, 140, 0); } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="adminNotice" class="admin-notice-bar hidden">📢 নোটিশ: লোড হচ্ছে...</div>
+
+<div id="authScreen" class="auth-container">
+    <h2>MHSMS সাইন-ইন 🌸</h2>
+    <input type="text" id="usernameInput" placeholder="ইউজারনেম (ছোট হাতের ইংরেজি)">
+    <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড (নূন্যতম ৬ অক্ষর)">
+    <button id="authBtn" onclick="handleAuth()">লগইন / রেজিস্টার</button>
+</div>
+
+<div id="appScreen" class="app-container hidden">
+    <div class="sidebar">
+        <div class="sidebar-header"><span class="animated-logo">MHSMS</span></div>
+        <div class="add-friend-box">
+            <input type="text" id="friendUsername" placeholder="বন্ধুর ইউজারনেম...">
+            <button onclick="addFriend()">অ্যাড</button>
+        </div>
+        <ul class="friend-list" id="friendList"></ul>
+        <div id="groupChatSidebarBtn" class="group-chat-btn hidden" onclick="openGroupChat()">🌍 গ্লোবাল গ্রুপ চ্যাট</div>
+    </div>
+    
+    <div class="chat-area">
+        <div class="chat-header">
+            <div class="chat-header-left" id="currentChatUser">কোনো বন্ধু সিলেক্ট করুন</div>
+            <div class="chat-actions-container hidden" id="chatActions">
+                <button id="audioCallBtn" class="call-btn" onclick="makeCall('Audio')">📞</button>
+                <button id="videoCallBtn" class="call-btn" onclick="makeCall('Video')">📹</button>
+                <a href="https://wa.me/8801782601342" target="_blank" class="whatsapp-support-btn">সাপোর্ট</a>
+            </div>
+        </div>
+        <div class="message-area" id="messageArea"></div>
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="মেসেজ লিখুন..." autocomplete="off">
+            <button id="sendBtn" onclick="sendMessage()">পাঠান</button>
+        </div>
+    </div>
+</div>
+
+<div id="callOverlay" class="call-overlay hidden">
+    <div class="call-avatar" id="callAvatar">👤</div>
+    <h2 id="callUserName">User</h2>
+    <div class="call-status" id="callTypeStatus">Calling...</div>
+    
+    <div class="call-buttons">
+        <button id="btnAcceptCall" class="btn-call btn-accept hidden" onclick="answerCall()">Receive</button>
+        <button class="btn-call btn-decline" onclick="hangUpCall()">End Call</button>
+    </div>
+
+    <div id="videoStreams" class="video-container hidden">
+        <video id="localVideo" autoplay playsinline muted></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+    </div>
+</div>
+
+<audio id="ringtoneSound" loop src="https://assets.mixkit.co/active_storage/sfx/1359/1359-84.wav" preload="auto"></audio>
+<audio id="ringingSound" loop src="https://assets.mixkit.co/active_storage/sfx/1643/1643-84.wav" preload="auto"></audio>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyD1p-aoUP7QUEFqGCL5j7YE5RWnV7Uwd0A",
+        authDomain: "hedayatul-4487e.firebaseapp.com",
+        projectId: "hedayatul-4487e",
+        storageBucket: "hedayatul-4487e.firebasestorage.app",
+        messagingSenderId: "120479258973",
+        appId: "1:120479258973:web:3280d2794466b1537030b4"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let activeChatFriend = null;
+    let isGroupChatActive = false;
+    let unsubscribeChat = null;
+    let unsubscribeCalls = null;
+    let isInitialLoad = true;
+    
+    let localStream = null;
+    let remoteStream = null;
+    let peerConnection = null;
+    let currentCallId = null;
+
+    const rtcConfig = {
+        iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
+    };
+
+    // ⚙️ অ্যাডমিন প্যানেল থেকে লাইভ আপডেট শো করার মেকানিজম
+    function listenForAdminUpdates() {
+        db.collection("settings").doc("admin_controls").onSnapshot(doc => {
+            if(doc.exists) {
+                const data = doc.data();
+                
+                // ১. নোটিশ আপডেট
+                const noticeBar = document.getElementById("adminNotice");
+                if(data.noticeText && data.noticeText.trim() !== "") {
+                    noticeBar.innerText = "📢 " + data.noticeText;
+                    noticeBar.classList.remove("hidden");
+                } else {
+                    noticeBar.classList.add("hidden");
+                }
+
+                // ২. গ্রুপ চ্যাট বাটন অন/অফ
+                const groupBtn = document.getElementById("groupChatSidebarBtn");
+                if(data.enableGroupChat === true) {
+                    groupBtn.classList.remove("hidden");
+                } else {
+                    groupBtn.classList.add("hidden");
+                    if(isGroupChatActive) { resetToNoChat(); }
+                }
+            }
+        });
+    }
+
+    function requestNotificationPermission() {
+        if ("Notification" in window) { Notification.requestPermission(); }
+    }
+
+    function showPushNotification(title, body) {
+        if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+            new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/3616/3616215.png' });
+        }
+    }
+
+    async function handleAuth() {
+        const username = document.getElementById('usernameInput').value.trim().toLowerCase();
+        const password = document.getElementById('passwordInput').value.trim();
+        if(!username || password.length < 6) { alert("সঠিক ইউজারনেম ও পাসওয়ার্ড দিন।"); return; }
+        try {
+            const userRef = db.collection("users").doc(username);
+            const doc = await userRef.get();
+            if (doc.exists && doc.data().password === password) { loginSuccess(username); } 
+            else if (!doc.exists) {
+                await userRef.set({ username, password, friends: [] });
+                loginSuccess(username);
+            } else { alert("ভুল পাসওয়ার্ড!"); }
+        } catch (e) { alert("এরর: " + e.message); }
+    }
+
+    function loginSuccess(username) {
+        currentUser = username;
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('appScreen').classList.remove('hidden');
+        requestNotificationPermission();
+        listenForAdminUpdates(); // অ্যাডমিন আপডেটের লিসেনার চালু হলো
+        loadFriends();
+        listenForIncomingCalls();
+        listenForAllIncomingMessages();
+    }
+
+    function listenForAllIncomingMessages() {
+        db.collectionGroup("messages").orderBy("timestamp", "desc").limit(1).onSnapshot(snapshot => {
+            if (isInitialLoad) { isInitialLoad = false; return; }
+            snapshot.docChanges().forEach(change => {
+                if (change.type === "added") {
+                    const data = change.doc.data();
+                    if (data.sender !== currentUser && activeChatFriend !== data.sender && !isGroupChatActive) {
+                        showPushNotification(`🌸 MHSMS - ${data.sender}`, data.text);
+                    }
+                }
+            });
+        });
+    }
+
+    function loadFriends() {
+        db.collection("users").doc(currentUser).onSnapshot((doc) => {
+            const list = document.getElementById('friendList');
+            list.innerHTML = '';
+            if(!doc.exists) return;
+            (doc.data().friends || []).forEach(friend => {
+                const li = document.createElement('li');
+                li.classList.add('friend-item');
+                if(activeChatFriend === friend && !isGroupChatActive) li.classList.add('active');
+                li.innerHTML = `<span style="flex:1;">🌸 ${friend}</span>`;
+                li.onclick = () => { 
+                    isGroupChatActive = false;
+                    activeChatFriend = friend; 
+                    document.getElementById('currentChatUser').innerText = "চ্যাট উইথ: " + friend; 
+                    document.getElementById('chatActions').classList.remove('hidden');
+                    document.getElementById('audioCallBtn').classList.remove('hidden');
+                    document.getElementById('videoCallBtn').classList.remove('hidden');
+                    loadMessages(); 
+                };
+                list.appendChild(li);
+            });
+        });
+    }
+
+    // 🌍 গ্লোবাল গ্রুপ চ্যাট ওপেন লজিক
+    function openGroupChat() {
+        isGroupChatActive = true;
+        activeChatFriend = null;
+        document.getElementById('currentChatUser').innerText = "🌍 গ্লোবাল গ্রুপ চ্যাটরুম";
+        document.getElementById('chatActions').classList.remove('hidden');
+        document.getElementById('audioCallBtn').classList.add('hidden'); // গ্রুপে কল বন্ধ
+        document.getElementById('videoCallBtn').classList.add('hidden');
+        loadMessages();
+    }
+
+    function resetToNoChat() {
+        isGroupChatActive = false;
+        activeChatFriend = null;
+        document.getElementById('messageArea').innerHTML = '';
+        document.getElementById('chatActions').classList.add('hidden');
+        document.getElementById('currentChatUser').innerText = "কোনো বন্ধু সিলেক্ট করুন";
+    }
+
+    function loadMessages() {
+        if (unsubscribeChat) unsubscribeChat();
+        
+        let messagesRef;
+        if(isGroupChatActive) {
+            messagesRef = db.collection("group_chats").doc("global_room").collection("messages").orderBy("timestamp", "asc");
+        } else {
+            const chatId = [currentUser, activeChatFriend].sort().join('_');
+            messagesRef = db.collection("chats").doc(chatId).collection("messages").orderBy("timestamp", "asc");
+        }
+
+        unsubscribeChat = messagesRef.onSnapshot(snapshot => {
+            const area = document.getElementById('messageArea'); area.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const wrapper = document.createElement('div'); wrapper.classList.add('message-wrapper');
+                const container = document.createElement('div'); container.classList.add('message-container');
+                const msgDiv = document.createElement('div'); msgDiv.classList.add('message', data.sender === currentUser ? 'outgoing' : 'incoming');
+                container.style.justifyContent = data.sender === currentUser ? 'flex-end' : 'flex-start';
+                
+                // গ্রুপ চ্যাট হলে সেন্ডারের নাম দেখাবে
+                let senderNameHtml = (isGroupChatActive && data.sender !== currentUser) ? `<span class="msg-sender">@${data.sender}</span>` : '';
+                
+                msgDiv.innerHTML = `${senderNameHtml}<div>${data.text}</div>`;
+                const timeDiv = document.createElement('span'); timeDiv.classList.add('msg-time');
+                timeDiv.innerText = new Date(data.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                timeDiv.style.alignSelf = data.sender === currentUser ? 'flex-end' : 'flex-start';
+                container.appendChild(msgDiv); wrapper.appendChild(container); wrapper.appendChild(timeDiv); area.appendChild(wrapper);
+            });
+            area.scrollTop = area.scrollHeight;
+        });
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput'); const text = input.value.trim();
+        if (!text) return;
+        const msgData = { sender: currentUser, text, timestamp: new Date().getTime() };
+        
+        if(isGroupChatActive) {
+            await db.collection("group_chats").doc("global_room").collection("messages").add(msgData);
+        } else if(activeChatFriend) {
+            const chatId = [currentUser, activeChatFriend].sort().join('_');
+            await db.collection("chats").doc(chatId).collection("messages").add(msgData);
+        }
+        input.value = '';
+    }
+
+    // 📞 লাইভ কলিং ইঞ্জিন (WebRTC)
+    async function makeCall(type) {
+        if(!activeChatFriend) return;
+        currentCallId = currentUser + "_" + Date.now();
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'Video' });
+            document.getElementById('videoStreams').classList.remove('hidden');
+            document.getElementById('localVideo').srcObject = localStream;
+        } catch (e) { alert("ক্যামেরা/মাইক্রোফোন পারমিশন দিন!"); return; }
+
+        showCallOverlay(activeChatFriend, `${type} Call - Ringing...`, false);
+        document.getElementById('ringingSound').play().catch(e => console.log(e));
+
+        peerConnection = new RTCPeerConnection(rtcConfig);
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+        remoteStream = new MediaStream();
+        document.getElementById('remoteVideo').srcObject = remoteStream;
+        peerConnection.ontrack = event => event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
+
+        const callDoc = db.collection("calls").doc(currentCallId);
+        peerConnection.onicecandidate = event => event.candidate && callDoc.collection("callerCandidates").add(event.candidate.toJSON());
+
+        const offerDescription = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offerDescription);
+        await callDoc.set({ caller: currentUser, receiver: activeChatFriend, type: type, status: "ringing", offer: { type: offerDescription.type, sdp: offerDescription.sdp } });
+
+        callDoc.onSnapshot(snapshot => {
+            const data = snapshot.data();
+            if (data && data.answer && !peerConnection.currentRemoteDescription) {
+                peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+            }
+        });
+        callDoc.collection("receiverCandidates").onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => change.type === 'added' && peerConnection.addIceCandidate(new RTCIceCandidate(change.doc.data())));
+        });
+        listenToCallStatus();
+    }
+
+    function listenForIncomingCalls() {
+        db.collection("calls").where("receiver", "==", currentUser).where("status", "==", "ringing").onSnapshot(snapshot => {
+            snapshot.forEach(doc => {
+                if (currentCallId) return; 
+                const data = doc.data(); currentCallId = doc.id;
+                showCallOverlay(data.caller, `Incoming ${data.type} Call...`, true);
+                showPushNotification(`📞 ইনকামিং কল!`, `${data.caller} আপনাকে কল করছেন...`);
+                document.getElementById('ringtoneSound').play().catch(e => console.log(e));
+            });
+        });
+    }
+
+    async function answerCall() {
+        const callDoc = db.collection("calls").doc(currentCallId);
+        const data = (await callDoc.get()).data();
+        document.getElementById('ringtoneSound').pause();
+        document.getElementById('ringtoneSound').currentTime = 0;
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: data.type === 'Video' });
+            document.getElementById('videoStreams').classList.remove('hidden');
+            document.getElementById('localVideo').srcObject = localStream;
+        } catch (e) { alert("মাইক্রোফোন ব্যর্থ!"); return; }
+
+        document.getElementById('callTypeStatus').innerText = "Connecting...";
+        document.getElementById('btnAcceptCall').classList.add('hidden');
+
+        peerConnection = new RTCPeerConnection(rtcConfig);
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+        remoteStream = new MediaStream();
+        document.getElementById('remoteVideo').srcObject = remoteStream;
+        peerConnection.ontrack = event => event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
+
+        peerConnection.onicecandidate = event => event.candidate && callDoc.collection("receiverCandidates").add(event.candidate.toJSON());
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+        const answerDescription = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answerDescription);
+
+        await callDoc.update({ status: "accepted", answer: { type: answerDescription.type, sdp: answerDescription.sdp } });
+        callDoc.collection("callerCandidates").onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => change.type === 'added' && peerConnection.addIceCandidate(new RTCIceCandidate(change.doc.data())));
+        });
+        listenToCallStatus();
+    }
+
+    function listenToCallStatus() {
+        if (unsubscribeCalls) unsubscribeCalls(); 
+        unsubscribeCalls = db.collection("calls").doc(currentCallId).onSnapshot(doc => {
+            if(!doc.exists) { cleanUpCallUI(); return; }
+            const data = doc.data();
+            if(data.status === "accepted") {
+                document.getElementById('ringingSound').pause();
+                document.getElementById('callTypeStatus').innerText = "Call Connected & Speaking... 🎙️";
+            } else if(data.status === "ended") { cleanUpCallUI(); }
+        });
+    }
+
+    async function hangUpCall() {
+        if(currentCallId) { try { await db.collection("calls").doc(currentCallId).update({ status: "ended" }); await db.collection("calls").doc(currentCallId).delete(); } catch(e){} }
+        cleanUpCallUI();
+    }
+
+    function showCallOverlay(name, status, isIncoming) {
+        document.getElementById('callUserName').innerText = name; document.getElementById('callTypeStatus').innerText = status;
+        document.getElementById('callOverlay').classList.remove('hidden'); if(isIncoming) document.getElementById('btnAcceptCall').classList.remove('hidden');
+    }
+
+    function cleanUpCallUI() {
+        document.getElementById('callOverlay').classList.add('hidden'); document.getElementById('btnAcceptCall').classList.add('hidden'); document.getElementById('videoStreams').classList.add('hidden');
+        document.getElementById('ringtoneSound').pause(); document.getElementById('ringingSound').pause();
+        if(peerConnection) { peerConnection.close(); peerConnection = null; }
+        if(localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
+        currentCallId = null;
+    }
+
+    async function addFriend() { const f = document.getElementById('friendUsername').value.trim().toLowerCase(); if(!f || f === currentUser) return; await db.collection("users").doc(currentUser).update({ friends: firebase.firestore.FieldValue.arrayUnion(f) }); await db.collection("users").doc(f).update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUser) }); alert("যুক্ত হয়েছে!"); document.getElementById('friendUsername').value = ''; }
+    document.getElementById('messageInput').addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+</script>
+</body>
+</html>
