@@ -8,19 +8,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column; }
         
-        /* 📢 অ্যাডমিন নোটিশ বার */
         .admin-notice-bar { width: 100%; max-width: 950px; background: #fff3cd; color: #856404; padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: center; font-weight: bold; border: 1px solid #ffeeba; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
         .app-container { width: 100%; max-width: 950px; height: 85vh; background: rgba(255, 255, 255, 0.9); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; overflow: hidden; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5); }
         
-        /* Auth Screen */
         .auth-container { width: 100%; max-width: 400px; background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border: 2px solid #ffb7b2; }
         .auth-container h2 { margin-bottom: 20px; color: #ff6b6b; font-size: 1.8rem; }
         .auth-container input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ffccd5; border-radius: 25px; outline: none; transition: 0.3s; padding-left: 20px; }
         .auth-container input:focus { border-color: #ff6b6b; box-shadow: 0 0 8px rgba(255,107,107,0.2); }
         .auth-container button { width: 100%; padding: 14px; background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 1rem; box-shadow: 0 4px 10px rgba(255,107,107,0.3); }
         
-        /* Sidebar */
         .sidebar { width: 30%; border-right: 1px solid #ffe5ec; display: flex; flex-direction: column; background: #fff5f7; }
         .sidebar-header { padding: 20px 15px; background: linear-gradient(45deg, #ff758c, #ff7eb3); color: white; font-weight: bold; font-size: 1.3rem; text-align: center; position: relative; overflow: hidden; }
         .animated-logo { display: inline-block; font-family: 'Arial Black', sans-serif; letter-spacing: 2px; text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); animation: moveAround 4s ease-in-out infinite alternate, glowEffect 1.5s ease-in-out infinite alternate; }
@@ -36,14 +32,10 @@
         .friend-item { padding: 15px 12px; border-bottom: 1px solid #ffe5ec; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 500; color: #4a4a4a; }
         .friend-item:hover { background: #ffe5ec; }
         .friend-item.active { background: #ffccd5; color: #ff0040; font-weight: bold; border-left: 5px solid #ff4d6d; }
-        .list-delete-btn { color: #dc3545; font-size: 1.1rem; padding: 0 5px; transition: 0.2s; cursor: pointer; }
-        .list-delete-btn:hover { transform: scale(1.2); }
 
-        /* 👥 গ্রুপ চ্যাট বাটন (অ্যাডমিন দ্বারা নিয়ন্ত্রিত) */
         .group-chat-btn { padding: 12px; background: #6a11cb; color: white; text-align: center; font-weight: bold; cursor: pointer; transition: 0.3s; border-top: 1px solid rgba(255,255,255,0.2); }
         .group-chat-btn:hover { background: #2575fc; }
 
-        /* Chat Area */
         .chat-area { width: 70%; display: flex; flex-direction: column; background: #fffbfb; position: relative; }
         .chat-header { padding: 15px; background: #fff0f3; border-bottom: 1px solid #ffe5ec; font-weight: bold; font-size: 1rem; color: #ff4d6d; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .chat-header-left { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -62,14 +54,10 @@
         .msg-time { font-size: 0.7rem; color: #a1a1a1; margin-top: 4px; display: block; }
         .msg-sender { font-size: 0.75rem; color: #ff758c; font-weight: bold; margin-bottom: 2px; display: block; }
 
-        .reply-preview-bar { background: #ffe5ec; padding: 8px 15px; border-top: 1px solid #ffccd5; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #ff4d6d; }
-        .close-reply-btn { cursor: pointer; font-weight: bold; color: #ff6b6b; }
-
         .input-area { display: flex; padding: 15px; border-top: 1px solid #ffe5ec; background: #fff0f3; }
         .input-area input { flex: 1; padding: 14px 20px; border: 1px solid #ffccd5; border-radius: 30px; outline: none; font-size: 0.95rem; }
         .input-area button { background: linear-gradient(45deg, #ff758c, #ff7eb3); color: white; border: none; padding: 0 25px; margin-left: 10px; border-radius: 30px; cursor: pointer; font-weight: bold; }
         
-        /* 📞 রিয়েল-টাইম কলিং স্ক্রিন ওভারলে */
         .call-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; color: white; text-align: center; }
         .call-avatar { width: 120px; height: 120px; background: #ff758c; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; margin-bottom: 20px; box-shadow: 0 0 25px #ff758c; animation: pulse 1.5s infinite; }
         .call-status { font-size: 1.2rem; color: #ffccd5; margin-bottom: 30px; font-weight: bold; }
@@ -79,7 +67,6 @@
         .btn-accept { background: #28a745; box-shadow: 0 4px 10px rgba(40,167,69,0.4); }
         .btn-decline { background: #dc3545; box-shadow: 0 4px 10px rgba(220,53,69,0.4); }
 
-        /* ভিডিও স্ট্রিম উইন্ডো */
         .video-container { display: flex; gap: 10px; margin-top: 20px; width: 90%; max-width: 600px; justify-content: center; }
         video { width: 45%; max-height: 250px; background: #222; border-radius: 10px; transform: scaleX(-1); border: 2px solid #ff758c; }
 
@@ -177,13 +164,10 @@
         iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }]
     };
 
-    // ⚙️ অ্যাডমিন প্যানেল থেকে লাইভ আপডেট শো করার মেকানিজম
     function listenForAdminUpdates() {
         db.collection("settings").doc("admin_controls").onSnapshot(doc => {
             if(doc.exists) {
                 const data = doc.data();
-                
-                // ১. নোটিশ আপডেট
                 const noticeBar = document.getElementById("adminNotice");
                 if(data.noticeText && data.noticeText.trim() !== "") {
                     noticeBar.innerText = "📢 " + data.noticeText;
@@ -192,7 +176,6 @@
                     noticeBar.classList.add("hidden");
                 }
 
-                // ২. গ্রুপ চ্যাট বাটন অন/অফ
                 const groupBtn = document.getElementById("groupChatSidebarBtn");
                 if(data.enableGroupChat === true) {
                     groupBtn.classList.remove("hidden");
@@ -234,7 +217,7 @@
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('appScreen').classList.remove('hidden');
         requestNotificationPermission();
-        listenForAdminUpdates(); // অ্যাডমিন আপডেটের লিসেনার চালু হলো
+        listenForAdminUpdates();
         loadFriends();
         listenForIncomingCalls();
         listenForAllIncomingMessages();
@@ -251,6 +234,8 @@
                     }
                 }
             });
+        }, error => {
+            console.log("ইনডেক্স তৈরি না হওয়া পর্যন্ত নোটিফিকেশন বন্ধ থাকবে।");
         });
     }
 
@@ -278,13 +263,12 @@
         });
     }
 
-    // 🌍 গ্লোবাল গ্রুপ চ্যাট ওপেন লজিক
     function openGroupChat() {
         isGroupChatActive = true;
         activeChatFriend = null;
         document.getElementById('currentChatUser').innerText = "🌍 গ্লোবাল গ্রুপ চ্যাটরুম";
         document.getElementById('chatActions').classList.remove('hidden');
-        document.getElementById('audioCallBtn').classList.add('hidden'); // গ্রুপে কল বন্ধ
+        document.getElementById('audioCallBtn').classList.add('hidden');
         document.getElementById('videoCallBtn').classList.add('hidden');
         loadMessages();
     }
@@ -299,7 +283,6 @@
 
     function loadMessages() {
         if (unsubscribeChat) unsubscribeChat();
-        
         let messagesRef;
         if(isGroupChatActive) {
             messagesRef = db.collection("group_chats").doc("global_room").collection("messages").orderBy("timestamp", "asc");
@@ -317,10 +300,9 @@
                 const msgDiv = document.createElement('div'); msgDiv.classList.add('message', data.sender === currentUser ? 'outgoing' : 'incoming');
                 container.style.justifyContent = data.sender === currentUser ? 'flex-end' : 'flex-start';
                 
-                // গ্রুপ চ্যাট হলে সেন্ডারের নাম দেখাবে
                 let senderNameHtml = (isGroupChatActive && data.sender !== currentUser) ? `<span class="msg-sender">@${data.sender}</span>` : '';
-                
                 msgDiv.innerHTML = `${senderNameHtml}<div>${data.text}</div>`;
+                
                 const timeDiv = document.createElement('span'); timeDiv.classList.add('msg-time');
                 timeDiv.innerText = new Date(data.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 timeDiv.style.alignSelf = data.sender === currentUser ? 'flex-end' : 'flex-start';
@@ -344,15 +326,27 @@
         input.value = '';
     }
 
-    // 📞 লাইভ কলিং ইঞ্জিন (WebRTC)
+    // 📞 শক্তিশালী কল মেকার লজিক
     async function makeCall(type) {
         if(!activeChatFriend) return;
         currentCallId = currentUser + "_" + Date.now();
+        
+        // আগের কোনো সেশন সচল থাকলে তা ক্লিন করে নেওয়া হচ্ছে
+        if(localStream) { localStream.getTracks().forEach(t => t.stop()); }
+
         try {
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'Video' });
+            const constraints = { 
+                audio: true, 
+                video: type === 'Video' ? { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } : false 
+            };
+            localStream = await navigator.mediaDevices.getUserMedia(constraints);
             document.getElementById('videoStreams').classList.remove('hidden');
             document.getElementById('localVideo').srcObject = localStream;
-        } catch (e) { alert("ক্যামেরা/মাইক্রোফোন পারমিশন দিন!"); return; }
+        } catch (e) { 
+            console.error(e);
+            alert("ক্যামেরা/মাইক্রোফোন চালু করা যায়নি! অনুগ্রহ করে পারমিশন চেক করুন।"); 
+            return; 
+        }
 
         showCallOverlay(activeChatFriend, `${type} Call - Ringing...`, false);
         document.getElementById('ringingSound').play().catch(e => console.log(e));
@@ -394,17 +388,31 @@
         });
     }
 
+    // 🛠️ সম্পূর্ণ ফিক্সড এবং শক্তিশালী কল রিসিভার লজিক (Error Free)
     async function answerCall() {
         const callDoc = db.collection("calls").doc(currentCallId);
         const data = (await callDoc.get()).data();
+        
         document.getElementById('ringtoneSound').pause();
         document.getElementById('ringtoneSound').currentTime = 0;
 
+        if(localStream) { localStream.getTracks().forEach(t => t.stop()); }
+
         try {
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: data.type === 'Video' });
+            // ব্রাউজার যাতে ক্র্যাশ না করে তাই নিখুঁত প্যারামিটার পাস করা হয়েছে
+            const constraints = {
+                audio: true,
+                video: data.type === 'Video' ? { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } : false
+            };
+            localStream = await navigator.mediaDevices.getUserMedia(constraints);
             document.getElementById('videoStreams').classList.remove('hidden');
             document.getElementById('localVideo').srcObject = localStream;
-        } catch (e) { alert("মাইক্রোফোন ব্যর্থ!"); return; }
+        } catch (e) { 
+            console.error("Media Error Details: ", e);
+            alert("মাইক্রোফোন বা ক্যামেরা চালু করা যায়নি! এটি অন্য কোনো অ্যাপে চালু থাকতে পারে।"); 
+            hangUpCall();
+            return; 
+        }
 
         document.getElementById('callTypeStatus').innerText = "Connecting...";
         document.getElementById('btnAcceptCall').classList.add('hidden');
